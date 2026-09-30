@@ -10,16 +10,16 @@ Prefer reading the trees here first:
 
 | Starter | Browse on GitHub | Live zip |
 | --- | --- | --- |
-| Operational Hub | [`starters/starter-operational-hub/`](starters/starter-operational-hub/) | [Campus-Operational-Hub-Starter-public.zip](https://thebeckoningcat.com/downloads/Campus-Operational-Hub-Starter-public.zip) |
-| Domain / Building | [`starters/starter-building-package/`](starters/starter-building-package/) | [Campus-Building-Starter-public.zip](https://thebeckoningcat.com/downloads/Campus-Building-Starter-public.zip) |
+| Operational Hub | [`starters/starter-operational-hub/`](starters/starter-operational-hub/) | [Campus-Operational-Hub-Starter-public.zip](https://github.com/TheBeckoningCat/personal-ai-harness/releases/download/v0.1.0-beta/Campus-Operational-Hub-Starter-public.zip) |
+| Domain / Building | [`starters/starter-building-package/`](starters/starter-building-package/) | [Campus-Building-Starter-public.zip](https://github.com/TheBeckoningCat/personal-ai-harness/releases/download/v0.1.0-beta/Campus-Building-Starter-public.zip) |
 
 Entry doors after unpack (or while browsing): each package’s `START HERE.md`, plus `PUBLIC_README.md`, `GO.md`, and `USE NOTICE.md`.
 
 A compact folder map lives in [`starters/TREE.md`](starters/TREE.md).
 
-## SHA-256 (live `/downloads/` zips)
+## SHA-256 (GitHub release `v0.1.0-beta`)
 
-Verified against `https://thebeckoningcat.com/downloads/` on **2026-09-30** (Asia/Tokyo). Same digests as the beta publish checklist.
+Verified against GitHub release [`v0.1.0-beta`](https://github.com/TheBeckoningCat/personal-ai-harness/releases/tag/v0.1.0-beta) on **2026-09-30** (Asia/Tokyo). Same digests as the beta publish checklist.
 
 | File | Bytes | SHA-256 |
 | --- | ---: | --- |
@@ -37,8 +37,8 @@ sha256sum -c SHA256SUMS.txt
 | Role | URL |
 | --- | --- |
 | PAIH landing | https://thebeckoningcat.com/personal-ai-harness/ |
-| Hub zip | https://thebeckoningcat.com/downloads/Campus-Operational-Hub-Starter-public.zip |
-| Building zip | https://thebeckoningcat.com/downloads/Campus-Building-Starter-public.zip |
+| Hub zip | https://github.com/TheBeckoningCat/personal-ai-harness/releases/download/v0.1.0-beta/Campus-Operational-Hub-Starter-public.zip |
+| Building zip | https://github.com/TheBeckoningCat/personal-ai-harness/releases/download/v0.1.0-beta/Campus-Building-Starter-public.zip |
 | Part I | https://thebeckoningcat.com/articles/building-my-own-ai-harness/ |
 | Part II | https://thebeckoningcat.com/articles/inside-my-personal-ai-campus/ |
 | Part III | https://thebeckoningcat.com/articles/why-your-ai-harness-should-belong-to-you/ |
