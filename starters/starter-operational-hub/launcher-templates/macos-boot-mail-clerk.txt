@@ -1,0 +1,5 @@
+#!/bin/bash
+# OPTIONAL — Mail Clerk. Not Core. Replace tokens after hatch.
+# Do not start on day one unless you understand it never writes vault markdown.
+cd "{{VAULT_PATH}}" || exit 1
+exec screen -S "{{MAIL_CLERK_SESSION}}" grok --always-approve -m "{{MODEL}}" --cwd "{{VAULT_PATH}}" "You are the Operational Hub mail clerk, not Core. Not the Operations Secretary. Not the Vault Architect. Never write any vault .md file. Never write Talk. Read 70 Strategy & Operations/Mail Room/Mail Clerk.md and follow it. Keep this window attached."

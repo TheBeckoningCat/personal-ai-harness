@@ -1,0 +1,332 @@
+#!/usr/bin/env python3
+"""First Run wizard for the Operational Hub starter.
+
+Fills names and folder paths. Does not invent projects, connect email,
+or install a finished AI Campus. Python 3 standard library only.
+"""
+
+from __future__ import annotations
+
+import os
+import re
+import shutil
+import sys
+import time
+from pathlib import Path
+
+TOTAL_STEPS = 8
+TOKEN = re.compile(r"\{\{[A-Z0-9_]+\}\}")
+TEXT_SUFFIXES = {".md", ".command", ".bat", ".base", ".txt", ".csv"}
+
+
+def package_root() -> Path:
+    here = Path(__file__).resolve().parent
+    for candidate in (here, here.parent, here.parent.parent):
+        if (candidate / "Operational Hub").is_dir():
+            return candidate
+    return here.parent
+
+
+def hub_source(root: Path) -> Path:
+    return root / "Operational Hub"
+
+
+def default_desktop() -> Path:
+    home = Path.home()
+    desktop = home / "Desktop"
+    return desktop if desktop.is_dir() else home
+
+
+def guess_timezone() -> str:
+    try:
+        link = Path("/etc/localtime")
+        if link.exists():
+            resolved = os.path.realpath(str(link))
+            marker = "/zoneinfo/"
+            if marker in resolved:
+                return resolved.split(marker, 1)[1]
+    except OSError:
+        pass
+    try:
+        name = time.tzname[0]
+        if name:
+            return name
+    except Exception:
+        pass
+    return "UTC"
+
+
+def clear():
+    if sys.stdout.isatty():
+        sys.stdout.write("\033[2J\033[H")
+        sys.stdout.flush()
+
+
+def banner(step: int, title: str) -> None:
+    clear()
+    print("Personal AI Harness")
+    print("Operational Hub  ·  First Run")
+    print()
+    print(f"Step {step} of {TOTAL_STEPS}  —  {title}")
+    print("-" * 52)
+    print()
+
+
+def pause(prompt: str = "Press Return to continue.") -> None:
+    try:
+        input(prompt + " ")
+    except EOFError:
+        print()
+
+
+def ask(question: str, default: str = "") -> str:
+    suffix = f" [{default}]" if default else ""
+    try:
+        raw = input(f"{question}{suffix}\n> ").strip()
+    except EOFError:
+        raw = ""
+    return raw or default
+
+
+def yes_no(question: str, default_yes: bool = True) -> bool:
+    hint = "Y/n" if default_yes else "y/N"
+    try:
+        raw = input(f"{question} ({hint})\n> ").strip().lower()
+    except EOFError:
+        raw = ""
+    if not raw:
+        return default_yes
+    return raw in {"y", "yes"}
+
+
+def show_notice() -> None:
+    banner(1, "Welcome")
+    print("This starter is from thebeckoningcat.com.")
+    print("It sets up a folder of notes you own.")
+    print()
+    print("Use rules")
+    print("- Personal projects and non-commercial teaching are fine.")
+    print("- Keep the credit: Personal AI Harness starter from thebeckoningcat.com.")
+    print("- Do not sell this starter as a product.")
+    print("- This is a starter skeleton, not a finished AI Campus.")
+    print("- No warranty. Full terms: LICENSE.md and NOTICE.md.")
+    print()
+    print("This wizard will:")
+    print("- Copy the Operational Hub folder to a place you choose")
+    print("- Put your name and a few preferences into the files")
+    print("- Leave one Inbox note so the hub is already in use")
+    print()
+    print("This wizard will not:")
+    print("- Connect email, calendar, or phone")
+    print("- Install Obsidian or any AI app")
+    print("- Invent your projects or commitments")
+    print()
+    pause("Press Return to continue.")
+
+
+def collect() -> dict:
+    desktop = default_desktop()
+    tz = guess_timezone()
+
+    banner(2, "Your name")
+    print("What name should the hub use for you?")
+    print("A first name is enough.")
+    print()
+    owner = ask("Your name", Path.home().name)
+
+    banner(3, "Hub name")
+    print("This folder is your life-level organization desk.")
+    print("You can keep the default name.")
+    print()
+    hub_name = ask("Hub name", "Operational Hub")
+
+    banner(4, "Where it should live")
+    print("Choose a folder on this computer. Obsidian (or any notes app)")
+    print("can open that folder later.")
+    print()
+    suggested = str(desktop / hub_name)
+    dest = Path(ask("Full folder path", suggested)).expanduser()
+
+    banner(5, "Time zone")
+    print("Daily notes use this. A city name such as Asia/Tokyo is ideal.")
+    print()
+    timezone = ask("Time zone", tz)
+
+    banner(6, "Helper seat names")
+    print("Two optional AI job titles live in the hub.")
+    print("Operations Secretary: inbox and review.")
+    print("Vault Architect: folder structure.")
+    print("You can keep the default names.")
+    print()
+    ops = ask("Operations Secretary name", "Operations Secretary")
+    architect = ask("Vault Architect name", "Vault Architect")
+
+    banner(7, "One Inbox note")
+    print("Optional. One sentence about something on your mind.")
+    print("Leave blank to skip.")
+    print()
+    capture = ask("Inbox note", "")
+
+    return {
+        "OWNER": owner,
+        "HUB_NAME": hub_name,
+        "TIMEZONE": timezone,
+        "VAULT_PATH": str(dest),
+        "WRITE_FENCE": str(dest),
+        "OPS_SECRETARY_NAME": ops,
+        "VAULT_ARCHITECT_NAME": architect,
+        "DESKTOP": str(desktop),
+        "AREA_FOLDER": dest.parent.name,
+        "STARTER_PACKAGE_PATH": str(package_root()),
+        "BACKUP_PARENT": str(desktop),
+        "OPS_SECRETARY_SESSION": slug(ops),
+        "VAULT_ARCHITECT_SESSION": slug(architect),
+        "MAIL_CLERK_SESSION": "mail-clerk",
+        "capture": capture,
+        "dest": dest,
+    }
+
+
+def slug(name: str) -> str:
+    text = re.sub(r"[^a-zA-Z0-9]+", "-", name.strip()).strip("-").lower()
+    return text or "seat"
+
+
+def replace_tokens(text: str, values: dict) -> str:
+    def swap(match: re.Match) -> str:
+        key = match.group(0)[2:-2]
+        if key in values and key != "capture":
+            return str(values[key])
+        return match.group(0)
+
+    return TOKEN.sub(swap, text)
+
+
+def copy_tree(src: Path, dest: Path) -> None:
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(src, dest, dirs_exist_ok=False)
+
+
+def fill_files(dest: Path, values: dict) -> int:
+    changed = 0
+    for path in dest.rglob("*"):
+        if not path.is_file():
+            continue
+        if path.suffix.lower() not in TEXT_SUFFIXES:
+            continue
+        try:
+            original = path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        updated = replace_tokens(original, values)
+        if updated != original:
+            path.write_text(updated, encoding="utf-8")
+            changed += 1
+    return changed
+
+
+def write_inbox(dest: Path, owner: str, note: str) -> Path | None:
+    inbox = dest / "00 Inbox"
+    inbox.mkdir(parents=True, exist_ok=True)
+    path = inbox / "Welcome.md"
+    body = (
+        f"# Welcome\n\n"
+        f"Placed by First Run for {owner}.\n\n"
+        f"{note.strip() or 'The hub is in use. Add the next capture here.'}\n"
+    )
+    path.write_text(body, encoding="utf-8")
+    return path
+
+
+def confirm(values: dict) -> bool:
+    dest: Path = values["dest"]
+    banner(8, "Review")
+    print(f"Name:                 {values['OWNER']}")
+    print(f"Hub:                  {values['HUB_NAME']}")
+    print(f"Folder:               {dest}")
+    print(f"Time zone:            {values['TIMEZONE']}")
+    print(f"Operations Secretary: {values['OPS_SECRETARY_NAME']}")
+    print(f"Vault Architect:      {values['VAULT_ARCHITECT_NAME']}")
+    if values["capture"]:
+        print(f"Inbox note:           {values['capture']}")
+    print()
+    print("Nothing has been written yet.")
+    print()
+    if dest.exists():
+        print(f"That folder already exists: {dest}")
+        print("Choose a new path, or remove it first. This wizard will not overwrite it.")
+        pause()
+        return False
+    return yes_no("Create this hub now?", True)
+
+
+def finish(dest: Path) -> None:
+    clear()
+    print("Personal AI Harness")
+    print("First Run complete")
+    print("-" * 52)
+    print()
+    print("Your Operational Hub is here:")
+    print(f"  {dest}")
+    print()
+    print("What to do next")
+    print("1. Open that folder in Obsidian, or any app that opens Markdown folders.")
+    print("2. Or drop the folder into a chatbot and say Start Here to keep going")
+    print("   with a guide. It should notice the names are already filled.")
+    print("3. Process the note in 00 Inbox when you have a minute.")
+    print()
+    print("A double-click boot file is optional. Ask your Startup guide if you want one")
+    print("for this computer later.")
+    print()
+    if sys.platform == "darwin":
+        if yes_no("Open the folder in Finder now?", True):
+            os.system(f'open "{dest}"')
+    elif sys.platform.startswith("win"):
+        if yes_no("Open the folder now?", True):
+            os.startfile(str(dest))  # type: ignore[attr-defined]
+    print()
+    print("Thank you for trying the Personal AI Harness starter")
+    print("from thebeckoningcat.com.")
+    print()
+
+
+def main() -> int:
+    root = package_root()
+    src = hub_source(root)
+    if not src.is_dir():
+        print("I cannot find the Operational Hub folder next to this wizard.")
+        print(f"Looked in: {src}")
+        print("Use the chat path instead: drop the unzipped starter into a chatbot")
+        print("and say Start Here.")
+        return 1
+
+    show_notice()
+    values = collect()
+    if not confirm(values):
+        print("No files were changed.")
+        return 0
+
+    dest: Path = values["dest"]
+    try:
+        copy_tree(src, dest)
+        for extra in ("LICENSE.md", "NOTICE.md", "HONEST_LIMITS.md"):
+            extra_src = root / extra
+            if extra_src.is_file():
+                shutil.copy2(extra_src, dest / extra)
+        fill_files(dest, values)
+        write_inbox(dest, values["OWNER"], values["capture"])
+    except Exception as exc:
+        print(f"Stopped. {exc}")
+        print("If a half-copied folder was created, you can delete it and run First Run again.")
+        return 1
+
+    finish(dest)
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except KeyboardInterrupt:
+        print("\nStopped. No further files were written.")
+        raise SystemExit(1)

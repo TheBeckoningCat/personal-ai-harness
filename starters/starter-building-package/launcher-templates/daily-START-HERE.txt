@@ -1,0 +1,24 @@
+# START HERE
+
+## First visible reply
+
+Print the use notice in `USE NOTICE.md` in full before anything else. Every host, including paste-only chats.
+
+## If you are an AI
+
+First-run is finished. Do not run the installer again.
+
+1. Open `Building/Main Lobby/Start Here.md`. If this folder already *is* the vault, open `Main Lobby/Start Here.md`.
+2. Boot the seat the human names: Architect (structure) or Director (the work).
+3. If they did not name a seat, ask once which job they want today.
+
+To start over from scratch, open `Building/Basement/Archive/First run/START HERE.md` and follow that saved first-run guide, or download a fresh starter zip from thebeckoningcat.com.
+
+## For the human
+
+Drop this folder into a chatbot, or paste this file if the chat cannot take a folder, and say **Start Here** or **go**.
+
+Then say which helper you want today:
+
+- Architect — structure
+- Director — the work

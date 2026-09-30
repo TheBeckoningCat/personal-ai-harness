@@ -1,0 +1,37 @@
+#!/bin/bash
+# Manual dated copy of the Operational Hub vault.
+# Replace {{VAULT_PATH}} and {{BACKUP_PARENT}} after hatch.
+# Does not overwrite an existing dated folder. Does not install a schedule.
+
+set -euo pipefail
+
+VAULT="{{VAULT_PATH}}"
+PARENT="{{BACKUP_PARENT}}"
+HUB_NAME="{{HUB_NAME}}"
+
+MONTH=$((10#$(date +%m)))
+DAY=$((10#$(date +%d)))
+YEAR=$(date +%y)
+DEST="${PARENT}/${HUB_NAME} ${MONTH}:${DAY}:${YEAR} Backup"
+
+if [ ! -d "$VAULT" ]; then
+  echo "Live vault not found: $VAULT"
+  exit 1
+fi
+
+if [ -e "$DEST" ]; then
+  echo "Already exists: $DEST"
+  echo "Leaving it alone. Rename or remove that folder yourself if you want a fresh copy today."
+  exit 0
+fi
+
+echo "Copying live vault to:"
+echo "  $DEST"
+ditto "$VAULT" "$DEST"
+echo "Done."
+
+if [ -t 0 ]; then
+  echo
+  echo "Close this window when you are ready."
+  read -r _
+fi

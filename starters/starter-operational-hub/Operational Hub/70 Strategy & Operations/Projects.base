@@ -1,0 +1,103 @@
+filters:
+  and:
+    - file.inFolder("10 Projects")
+    - file.ext == "md"
+formulas:
+  missing_area: if(area, false, true)
+  missing_priority: if(priority, false, true)
+properties:
+  note.area:
+    displayName: Area
+  note.status:
+    displayName: Status
+  note.priority:
+    displayName: Priority
+  note.review-on:
+    displayName: Review
+  note.closed-on:
+    displayName: Closed On
+  note.close-result:
+    displayName: Close Result
+  file.mtime:
+    displayName: Modified
+  formula.missing_area:
+    displayName: Missing Area
+  formula.missing_priority:
+    displayName: Missing Priority
+views:
+  - type: table
+    name: All Projects (10 Projects)
+    order:
+      - file.name
+      - area
+      - status
+      - priority
+      - review-on
+      - file.mtime
+    sort:
+      - property: area
+        direction: ASC
+      - property: priority
+        direction: ASC
+      - property: status
+        direction: ASC
+    columnSize:
+      file.name: 386
+  - type: table
+    name: Lifecycle Queue
+    filters:
+      or:
+        - status == "someday"
+        - status == "close"
+        - status == "delete"
+    order:
+      - status
+      - file.name
+      - area
+      - priority
+      - close-result
+      - file.mtime
+    sort:
+      - property: status
+        direction: ASC
+      - property: file.mtime
+        direction: DESC
+  - type: table
+    name: By Priority
+    order:
+      - priority
+      - area
+      - status
+      - file.name
+      - file.mtime
+  - type: table
+    name: Grouped by Area
+    order:
+      - area
+      - file.name
+      - status
+      - priority
+      - file.mtime
+  - type: table
+    name: Missing Area
+    filters:
+      and:
+        - "!area"
+    order:
+      - file.name
+      - file.mtime
+  - type: table
+    name: Missing Priority
+    filters:
+      and:
+        - "!priority"
+    order:
+      - file.name
+      - area
+      - status
+      - file.mtime
+  - type: table
+    name: Recently Modified
+    order:
+      - file.mtime
+      - file.name

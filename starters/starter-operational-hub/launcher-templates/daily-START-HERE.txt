@@ -1,0 +1,28 @@
+# START HERE
+
+## First visible reply
+
+Print the use notice in `USE NOTICE.md` (same text as first-run) in full before anything else. Every host, including paste-only chats.
+
+## If you are an AI
+
+First-run is finished. Do not run the installer again.
+
+1. Open `Operational Hub/Main Lobby/Start Here.md`. If this folder already *is* the vault, open `Main Lobby/Start Here.md`.
+2. Boot the seat the human names: Operations Secretary (inbox and review) or Vault Architect (folders).
+3. If they did not name a seat, ask once which job they want today.
+
+To start over from scratch, open `Operational Hub/40 Archive/First run/START HERE.md` (or `40 Archive/First run/START HERE.md`) and follow that saved first-run guide, or download a fresh starter zip from thebeckoningcat.com.
+
+Show the use notice from `LICENSE.md` / `NOTICE.md` only if they are restoring first-run. For ordinary daily boot, skip the installer voice.
+
+## For the human
+
+Drop this folder into a chatbot and say **Start Here** or **go**.
+
+Then say which helper you want today:
+
+- Operations Secretary — inbox and review
+- Vault Architect — folder structure
+
+The original first-run walk is saved under `40 Archive/First run/` if you ever want to hatch again from this copy.

@@ -1,0 +1,1 @@
+Copy a complete office from `Offices/Building Architect/` or `Offices/Building Director/`. Keep the same stock furniture: README, When I Walk In, When I Go Home, Left on the Desk, Scratch Pad, Lessons, and Work Log. Persona and Role live in `Main Lobby/Personas/`. Do not invent extra drawers on day one.

@@ -1,0 +1,13 @@
+#!/bin/bash
+# Boot Vault Architect — placeholder. Replace tokens after hatch.
+export PATH="{{GROK_BIN_DIR}}:$PATH"
+cd "{{VAULT_PATH}}" || exit 1
+SESSION="{{VAULT_ARCHITECT_SESSION}}"
+if screen -ls 2>/dev/null | grep -E "[[:space:]][0-9]+\.${SESSION}[[:space:]]" >/dev/null; then
+  echo "Session ${SESSION} already exists. This icon is a cold start."
+  echo "Attach with: screen -r ${SESSION}"
+  echo "Quit that session first. Do not start a second copy."
+  read -r -p "Press Return to close."
+  exit 1
+fi
+exec screen -S "${SESSION}" grok --always-approve -m "{{MODEL}}" --cwd "{{VAULT_PATH}}" "You are {{VAULT_ARCHITECT_NAME}}, Vault Architect of {{HUB_NAME}}. Act in that role and use your full intelligence and judgment. The Operations Secretary manages Hub operations. {{OWNER}} makes final decisions. The Role defines your authority and responsibilities. The Persona defines your identity and behavior. Boot from this vault in this order: Main Lobby/Start Here.md, Main Lobby/Boot Instructions.md, Main Lobby/Access Boundaries.md, Main Lobby/Personas/Vault Architect Role.md, Main Lobby/Personas/Vault Architect.md, the three files in 70 Strategy & Operations/Offices/Vault Architect/Lessons (What I learned, What went well, and What could be better, newest entries first), Main Lobby/Campus Communication Standard.md, and 70 Strategy & Operations/Offices/Vault Architect/When I Walk In.md. Follow the office startup procedure completely. Write only inside this vault unless {{OWNER}} approves another path."

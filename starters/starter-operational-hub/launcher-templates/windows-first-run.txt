@@ -1,0 +1,20 @@
+@echo off
+REM Optional hatch helper. Save as "First Run.bat" next to the Operational Hub folder.
+REM Not required. Chat path: drop the unzipped starter into a chatbot and say Start Here.
+cd /d "%~dp0"
+where python >nul 2>&1
+if %errorlevel%==0 (
+  python launcher-templates\first-run-python.txt
+  goto end
+)
+where python3 >nul 2>&1
+if %errorlevel%==0 (
+  python3 launcher-templates\first-run-python.txt
+  goto end
+)
+echo Python 3 is needed for this optional installer.
+echo You can still set up without it: drop this folder into any chatbot
+echo and say Start Here or go.
+:end
+echo.
+pause

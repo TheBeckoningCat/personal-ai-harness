@@ -1,0 +1,17 @@
+#!/bin/bash
+# Optional hatch helper. Save as "First Run.command" next to the Operational Hub folder.
+# Not required. Chat path: drop the unzipped starter into a chatbot and say Start Here.
+cd "$(dirname "$0")" || exit 1
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Python 3 is needed for this optional installer."
+  echo "You can still set up without it: drop this folder into any chatbot"
+  echo "and say Start Here or go."
+  echo
+  read -r -p "Press Return to close."
+  exit 1
+fi
+python3 launcher-templates/first-run-python.txt
+status=$?
+echo
+read -r -p "Press Return to close."
+exit "$status"

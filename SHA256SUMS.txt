@@ -1,0 +1,2 @@
+389dfa87ab5f31468c82da91a7458515d04f6fc761c652de7e0b2e6ad9531d2f  Campus-Operational-Hub-Starter-public.zip
+43efeb8b9b97f20d2c6d2bbb41de804320246535bae77433cfad460925a3367a  Campus-Building-Starter-public.zip
